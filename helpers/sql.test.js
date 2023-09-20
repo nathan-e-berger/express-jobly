@@ -1,11 +1,13 @@
 "use strict";
 
-const { sqlForPartialUpdate } = require("./sql");
+const { defineConfig } = require("vite");
+const { sqlForPartialUpdate, sqlFilterCompany } = require("./sql");
+
 
 /************************************** sqlForPartialUpdate */
 
 describe("sqlForPartialUpdate", function () {
-  test("mimic inputs for User model", async function () {
+  test("mimic inputs for User model", function () {
     const data = {
       firstName: "nathan",
       lastName: "irrelevant",
@@ -26,7 +28,7 @@ describe("sqlForPartialUpdate", function () {
     });
   });
 
-  test("mimic inputs for Company model", async function () {
+  test("mimic inputs for Company model", function () {
     const data = {
       name: "fake",
       description: "not real",
@@ -46,7 +48,7 @@ describe("sqlForPartialUpdate", function () {
     });
   });
 
-  test("missing data input expects error", async function () {
+  test("missing data input expects error", function () {
     const data = {};
 
     const jsToSql = {
@@ -57,5 +59,36 @@ describe("sqlForPartialUpdate", function () {
     expect(() => {
       sqlForPartialUpdate(data, jsToSql);
     }).toThrow("No data");
+  });
+});
+
+/************************************** sqlFilterCompany */
+
+describe("sqlFilterCompany", function () {
+  test("mimic inputs for filterAll() Company method ", function () {
+    const nameLike = "test";
+    expect(sqlFilterCompany({ nameLike })).toEqual("WHERE name ILIKE '%test%'");
+  });
+  test("nameLike and minEmployees as optional parameters", function () {
+    const nameLike = "test";
+    const minEmployees = 2;
+    expect(sqlFilterCompany({ nameLike, minEmployees }))
+      .toEqual("WHERE name ILIKE '%test%' AND num_employees >= 2");
+  });
+
+  test("nameLike and minEmployees as optional parameters", function () {
+    const nameLike = "test";
+    const minEmployees = 2;
+    const maxEmployees = 3;
+    expect(sqlFilterCompany({ nameLike, minEmployees, maxEmployees })).toEqual(
+      "WHERE name ILIKE '%test%' AND num_employees >= 2 AND num_employees <= 3");
+  });
+
+  test("minEmployees > maxEmployees throws error", function () {
+    const minEmployees = 3;
+    const maxEmployees = 2;
+    expect(() => {
+      sqlFilterCompany({ minEmployees, maxEmployees });
+    }).toThrow("minEmployees must be smaller than maxEmployees.");
   });
 });

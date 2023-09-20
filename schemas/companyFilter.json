@@ -1,22 +1,23 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://our.company.com/companyFilter.schema.json",
-    "type": "object",
-    "properties": {
-      "nameLike": {
-        "type": "string",
-        "minLength": 1,
-        "maxLength": 30
-      },
-      "minEmployees": {
-        "type": "string",
-        "pattern": "[0-9]"
-      },
-      "maxEmployees": {
-        "type": "string",
-        "pattern": "[0-9]"
-      }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://our.company.com/companyFilter.schema.json",
+  "type": "object",
+  "properties": {
+    "nameLike": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30,
+      "pattern": "^[a-zA-Z, -]$"
     },
-    "additionalProperties": false,
-    "required": []
-  }
+    "minEmployees": {
+      "type": "string",
+      "pattern": "^[0-9]$"
+    },
+    "maxEmployees": {
+      "type": "string",
+      "pattern": "^[0-9]$"
+    }
+  },
+  "additionalProperties": false,
+  "required": []
+}

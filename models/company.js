@@ -55,11 +55,11 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAll({nameLike = null, minEmployees = null, maxEmployees = null}) {
+  static async findAll({ nameLike = null, minEmployees = null, maxEmployees = null }) {
     let whereStatement;
 
     if (nameLike || minEmployees || maxEmployees) {
-      whereStatement = sqlFilterCompany({nameLike, minEmployees, maxEmployees});
+      whereStatement = sqlFilterCompany({ nameLike, minEmployees, maxEmployees });
     }
 
     const companiesRes = await db.query(`

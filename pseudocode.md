@@ -6,11 +6,11 @@
 - request.query object will contain all
 - min and max employees are sent as STRINGS
 - {required: true} does NOT have to be passed in when validating
-
-
-
-
 - update MODEL to include filtering functionality
+
+
+
+
 
 
 

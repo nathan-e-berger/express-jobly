@@ -31,12 +31,12 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 }
 
 
-/** sqlWhereBuilder: Takes in parameters to filter and builds a
+/** sqlFilterCompany: Takes in parameters to filter and builds a
  *  dynamic WHERE statement if values are passed in.
  *
  * Accepts { nameLike, minEmployees, maxEmployees }
  *
- * Returns string
+ * Returns string (WHERE clause)
  */
 function sqlFilterCompany({ nameLike, minEmployees, maxEmployees }) {
 
