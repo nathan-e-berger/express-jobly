@@ -30,4 +30,38 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-module.exports = { sqlForPartialUpdate };
+
+/** sqlWhereBuilder: Takes in parameters to filter and builds a
+ *  dynamic WHERE statement if values are passed in.
+ *
+ * Accepts { nameLike, minEmployees, maxEmployees }
+ *
+ * Returns string
+ */
+function sqlFilterCompany({ nameLike, minEmployees, maxEmployees }) {
+
+  if (minEmployees && maxEmployees) {
+    if (Number(minEmployees) > Number(maxEmployees))
+      throw new BadRequestError(
+        "minEmployees must be smaller than maxEmployees.");
+  }
+
+  let statement = [];
+
+  if (nameLike) {
+    statement.push(`name ILIKE '%${nameLike}%'`);
+  }
+
+  if (minEmployees) {
+    statement.push(`num_employees >= ${minEmployees}`);
+  }
+
+  if (maxEmployees) {
+    statement.push(`num_employees <= ${maxEmployees}`);
+  }
+
+  return "WHERE ".concat(statement.join(" AND "));
+
+}
+
+module.exports = { sqlForPartialUpdate, sqlFilterCompany };

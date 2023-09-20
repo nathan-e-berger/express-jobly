@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlFilterCompany } = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -38,12 +38,12 @@ class Company {
                     description,
                     num_employees AS "numEmployees",
                     logo_url AS "logoUrl"`, [
-          handle,
-          name,
-          description,
-          numEmployees,
-          logoUrl,
-        ],
+      handle,
+      name,
+      description,
+      numEmployees,
+      logoUrl,
+    ],
     );
     const company = result.rows[0];
 
@@ -55,7 +55,13 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAll() {
+  static async findAll({nameLike = null, minEmployees = null, maxEmployees = null}) {
+    let whereStatement;
+
+    if (nameLike || minEmployees || maxEmployees) {
+      whereStatement = sqlFilterCompany({nameLike, minEmployees, maxEmployees});
+    }
+
     const companiesRes = await db.query(`
         SELECT handle,
                name,
@@ -63,9 +69,11 @@ class Company {
                num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
         FROM companies
+        ${whereStatement}
         ORDER BY name`);
     return companiesRes.rows;
   }
+
 
   /** Given a company handle, return data about company.
    *
@@ -106,11 +114,11 @@ class Company {
 
   static async update(handle, data) {
     const { setCols, values } = sqlForPartialUpdate(
-        data,
-        {
-          numEmployees: "num_employees",
-          logoUrl: "logo_url",
-        });
+      data,
+      {
+        numEmployees: "num_employees",
+        logoUrl: "logo_url",
+      });
     const handleVarIdx = "$" + (values.length + 1);
 
     const querySql = `
