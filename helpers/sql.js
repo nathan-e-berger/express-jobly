@@ -2,16 +2,17 @@
 
 const { BadRequestError } = require("../expressError");
 
-/** sqlForPartialUpdate: Takes in a partial set of data and provides the
- * outputs necessary for a SQL statement.
+/** sqlForPartialUpdate: Takes in a set of data and provides the
+ * outputs necessary to build a SQL update statement.
  *
  * Accepts
  *         dataToUpdate as { firstName, lastName, ... }
- *         jsToSql as {camelCase: snake_case} object for formatting
+ *         jsToSql as {camelColumnName: snake_column_name} object for formatting
  *
  * Returns {
- *          setCols: "string of column names separated by comma,
- *                    parameterized variables and '/' "
+ *          setCols: "formatted string of column names set to
+ *                    parameterized variables
+ *
  *
  *          values: [value1, value2, ... ]
  *         }

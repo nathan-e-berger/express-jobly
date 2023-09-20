@@ -1,20 +1,9 @@
 "use strict";
 
-const request = require("supertest");
 const { sqlForPartialUpdate } = require("./sql");
-const { BadRequestError } = require("../expressError");
 
-
-/**
- *  test with data set input data,
- *
- *   - test that camel to snake case works
- *   - that output matches
- *
- * happy path
- */
-describe("sqlForPartialUpdate's expected output", function () {
-  test("output constains the input", async function () {
+describe("sqlForPartialUpdate", function () {
+  test("mimic inputs for User model", async function () {
     const data = {
       firstName: "nathan",
       lastName: "irrelevant",
@@ -25,6 +14,7 @@ describe("sqlForPartialUpdate's expected output", function () {
     const jsToSql = {
       firstName: "first_name",
       lastName: "last_name",
+      isAdmin: "is_admin",
     };
 
     const result = sqlForPartialUpdate(data, jsToSql);
@@ -34,7 +24,7 @@ describe("sqlForPartialUpdate's expected output", function () {
     });
   });
 
-  test("test that company data is updated", async function () {
+  test("mimic inputs for Company model", async function () {
     const data = {
       name: "fake",
       description: "not real",
@@ -46,20 +36,22 @@ describe("sqlForPartialUpdate's expected output", function () {
       numEmployees: "num_employees",
       logoUrl: "logo_url",
     };
+
     const result = sqlForPartialUpdate(data, jsToSql);
     expect(result).toEqual({
-      "setCols": "\"name\"=$1, \"description\"=$2, \"num_employees\"=$3, \"logo_url\"=$4",
-      "values": ["fake", "not real", "20", "test.fakephoto.com"]
+      setCols: '\"name\"=$1, \"description\"=$2, \"num_employees\"=$3, \"logo_url\"=$4',
+      values: ["fake", "not real", "20", "test.fakephoto.com"]
     });
   });
 
-  test("can handle missing data as input", async function () {
+  test("missing data input expects error", async function () {
     const data = {};
 
     const jsToSql = {
       numEmployees: "num_employees",
       logoUrl: "logo_url",
     };
+
     expect(() => {
       sqlForPartialUpdate(data, jsToSql);
     }).toThrow("No data");
