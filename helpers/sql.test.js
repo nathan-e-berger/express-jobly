@@ -2,6 +2,8 @@
 
 const { sqlForPartialUpdate } = require("./sql");
 
+/************************************** sqlForPartialUpdate */
+
 describe("sqlForPartialUpdate", function () {
   test("mimic inputs for User model", async function () {
     const data = {

@@ -11,10 +11,8 @@ const { BadRequestError } = require("../expressError");
  *
  * Returns {
  *          setCols: "formatted string of column names set to
- *                    parameterized variables
- *
- *
- *          values: [value1, value2, ... ]
+ *                    parameterized variables"
+ *          values: [dataValue1, dataValue2, ... ]
  *         }
  * */
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
