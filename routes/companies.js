@@ -44,9 +44,9 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  *   { companies: [ { handle, name, description, numEmployees, logoUrl }, ...] }
  *
  * Can filter on provided search filters:
- * - minEmployees
- * - maxEmployees
  * - nameLike (will find case-insensitive, partial matches)
+ * - minEmployees (cannot be larger than maxEmployees)
+ * - maxEmployees
  *
  * Authorization required: none
  */
@@ -55,7 +55,14 @@ router.get("/", async function (req, res, next) {
   let { nameLike, minEmployees, maxEmployees } = req.query;
   minEmployees = minEmployees ? Number(minEmployees) : undefined;
   maxEmployees = maxEmployees ? Number(maxEmployees) : undefined;
-  const filters = { nameLike, minEmployees, maxEmployees }
+
+  if (minEmployees && maxEmployees) {
+    if (minEmployees > maxEmployees)
+      throw new BadRequestError(
+        "minEmployees must be smaller than maxEmployees.");
+  }
+
+  const filters = { nameLike, minEmployees, maxEmployees };
 
   const validator = jsonschema.validate(filters, companyFilterSchema);
 

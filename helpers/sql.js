@@ -38,17 +38,11 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
  *
  * Returns
  *        {
- *        whereStatement:
+ *        whereStatement: "WHERE num_employees >= $1 ..."
  *        values: [nameLike, minEmployees, maxEmployees]
  *        }
  */
 function sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees }) {
-
-  if (minEmployees && maxEmployees) {
-    if (minEmployees > maxEmployees)
-      throw new BadRequestError(
-        "minEmployees must be smaller than maxEmployees.");
-  }
 
   let whereStatements = [];
   let params = [];
@@ -56,20 +50,20 @@ function sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees }) {
 
   if (nameLike) {
     whereStatements.push(`name ILIKE $${idx}`);
-    params.push(`%${nameLike}%`)
+    params.push(`%${nameLike}%`);
     idx++;
 
   }
 
   if (minEmployees) {
     whereStatements.push(`num_employees >= $${idx}`);
-    params.push(minEmployees)
+    params.push(minEmployees);
     idx++;
   }
 
   if (maxEmployees) {
     whereStatements.push(`num_employees <= $${idx}`);
-    params.push(maxEmployees)
+    params.push(maxEmployees);
     idx++;
   }
 

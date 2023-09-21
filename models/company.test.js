@@ -135,7 +135,7 @@ describe("findAll", function () {
     ]);
   });
 
-  test("works: filter minEmployees, maxEmployees", async function () {
+  test("works: filter nameLike, minEmployees, maxEmployees", async function () {
     const minEmployees = "2";
     const maxEmployees = "3";
     const nameLike = "C2";

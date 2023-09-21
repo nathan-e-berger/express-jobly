@@ -60,7 +60,6 @@ class Company {
     let whereStatement;
     let values;
 
-    //FIXME: refactor?
     if (nameLike || minEmployees || maxEmployees) {
       const result = sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees });
       whereStatement = result.whereStatement;
@@ -76,7 +75,7 @@ class Company {
                logo_url      AS "logoUrl"
         FROM companies
         ${whereStatement}
-        ORDER BY name`, [...values]);
+        ORDER BY name`, values);
 
     return companiesRes.rows;
   }
