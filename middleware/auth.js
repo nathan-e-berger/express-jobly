@@ -43,7 +43,7 @@ function ensureLoggedIn(req, res, next) {
  * * If not, throw Unauthorized.
 */
 function ensureIsAdmin(req, res, next) {
-  if (res.locals.user?.isAdmin) return next();
+  if (res.locals.user?.isAdmin === true) return next();
   throw new UnauthorizedError();
 }
 

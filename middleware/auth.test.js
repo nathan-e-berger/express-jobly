@@ -71,17 +71,32 @@ describe("ensureLoggedIn", function () {
   });
 });
 
+
 describe("ensureIsAdmin", function () {
   test("works for admin", function () {
     const req = {};
     const res = { locals: { user: { username: "admin", isAdmin: true } } };
-    ensureAdminOrCorrectUser(req, res, next);
+    ensureIsAdmin(req, res, next);
   });
 
   test("unauth if not admin", function () {
     const req = {};
     const res = { locals: { user: { username: "u1", isAdmin: false } } };
-    expect(() => ensureAdminOrCorrectUser(req, res, next))
+    expect(() => ensureIsAdmin(req, res, next))
+        .toThrow(UnauthorizedError);
+  });
+
+  test("unauth if not isAdmin is truthy value", function () {
+    const req = {};
+    const res = { locals: { user: { username: "u1", isAdmin: "true" } } };
+    expect(() => ensureIsAdmin(req, res, next))
+        .toThrow(UnauthorizedError);
+  });
+
+  test("res.locals is empty", function () {
+    const req = {};
+    const res = { locals: {} };
+    expect(() => ensureIsAdmin(req, res, next))
         .toThrow(UnauthorizedError);
   });
 });
@@ -101,6 +116,13 @@ describe("ensureAdminOrCorrectUser", function () {
         .toThrow(UnauthorizedError);
   });
 
+  test("unauth if not isAdmin is truthy value", function () {
+    const req = {};
+    const res = { locals: { user: { username: "u1", isAdmin: "true" } } };
+    expect(() => ensureAdminOrCorrectUser(req, res, next))
+        .toThrow(UnauthorizedError);
+  });
+
   test("works for matching username", function () {
     const req = {params: {username: "u1"}};
     const res = { locals: { user: { username: "u1", isAdmin: false } } };
@@ -112,5 +134,12 @@ describe("ensureAdminOrCorrectUser", function () {
     const res = { locals: { user: { username: "u1", isAdmin: false } } };
     expect(() => ensureAdminOrCorrectUser(req, res, next))
     .toThrow(UnauthorizedError);
+  });
+
+  test("res.locals is empty", function () {
+    const req = {};
+    const res = { locals: {} };
+    expect(() => ensureAdminOrCorrectUser(req, res, next))
+        .toThrow(UnauthorizedError);
   });
 });

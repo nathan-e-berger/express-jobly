@@ -406,10 +406,23 @@ describe("DELETE /users/:username", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("not found if user missing", async function () {
+  test("not found if user missing as admin", async function () {
     const resp = await request(app)
       .delete(`/users/nope`)
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(404);
+  });
+
+  test("not found if user missing as user", async function () {
+    const resp = await request(app)
+      .delete(`/users/nope`)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("not found if user missing as anon", async function () {
+    const resp = await request(app)
+      .delete(`/users/nope`)
+    expect(resp.statusCode).toEqual(401);
   });
 });
