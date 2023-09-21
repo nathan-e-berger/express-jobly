@@ -31,54 +31,40 @@ function authenticateJWT(req, res, next) {
 }
 
 /** Middleware to use when they must be logged in.
- *
- * If not, raises Unauthorized.
+ * If not, throw Unauthorized.
  */
-
 function ensureLoggedIn(req, res, next) {
   if (res.locals.user?.username) return next();
   throw new UnauthorizedError();
 }
 
 
-/** Middleware to be used when they must be admin. */
+/** Middleware to be used when they must be admin.
+ * * If not, throw Unauthorized.
+*/
 function ensureIsAdmin(req, res, next) {
   if (res.locals.user?.isAdmin) return next();
   throw new UnauthorizedError();
 }
 
 
-//FIXME: potential for users
-// /** Middleware: Requires user is user for route. */
-
-function ensureCorrectUser(req, res, next) {
-  const currentUser = res.locals.user;
-  const hasUnauthorizedUsername = currentUser?.username !== req.params.username;
-
-  if (!currentUser || hasUnauthorizedUsername) {
-    throw new UnauthorizedError();
-  }
-
-  return next();
-}
-
-/**Middleware to be used by correct user or admin
- *  If neither, raise Unauthorized
+/**Middleware to be used by admin or same username as URL parameter.
+ * If not, throw Unauthorized.
  */
-
 function ensureAdminOrCorrectUser(req, res, next) {
   const username = res.locals.user?.username;
   const isAdmin = res.locals.user?.isAdmin;
-  if (req.params.username !== username || isAdmin === false) {
-    throw new UnauthorizedError();
+
+  if (req.params?.username === username || isAdmin === true) {
+    return next();
   }
-  return next();
+
+  throw new UnauthorizedError();
 }
 
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   ensureIsAdmin,
-  ensureCorrectUser,
   ensureAdminOrCorrectUser
 };

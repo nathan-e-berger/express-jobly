@@ -5,7 +5,7 @@
 const jsonschema = require("jsonschema");
 
 const express = require("express");
-const { ensureLoggedIn, ensureAdminOrCorrectUser, ensureIsAdmin } = require("../middleware/auth");
+const { ensureAdminOrCorrectUser, ensureIsAdmin } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
@@ -24,7 +24,7 @@ const router = express.Router();
  * This returns the newly created user and an authentication token for them:
  *  {user: { username, firstName, lastName, email, isAdmin }, token }
  *
- * Authorization required: admins only
+ * Authorization required: admin
  **/
 
 router.post("/", ensureIsAdmin, async function (req, res, next) {
@@ -61,7 +61,7 @@ router.get("/", ensureIsAdmin, async function (req, res, next) {
  *
  * Returns { username, firstName, lastName, isAdmin }
  *
- * Authorization required: login
+ * Authorization required: admin or same user has URL parameter
  **/
 
 router.get("/:username", ensureAdminOrCorrectUser, async function (req, res, next) {
@@ -77,7 +77,7 @@ router.get("/:username", ensureAdminOrCorrectUser, async function (req, res, nex
  *
  * Returns { username, firstName, lastName, email, isAdmin }
  *
- * Authorization required: login
+ * Authorization required: admin or same user has URL parameter
  **/
 
 router.patch("/:username", ensureAdminOrCorrectUser, async function (req, res, next) {
@@ -98,7 +98,7 @@ router.patch("/:username", ensureAdminOrCorrectUser, async function (req, res, n
 
 /** DELETE /[username]  =>  { deleted: username }
  *
- * Authorization required: login
+ * Authorization required: admin or same user has URL parameter
  **/
 
 router.delete("/:username", ensureAdminOrCorrectUser, async function (req, res, next) {
