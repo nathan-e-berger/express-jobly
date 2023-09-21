@@ -21,5 +21,3 @@ test("not found for site 404 (test stack print)", async function () {
 afterAll(function () {
   db.end();
 });
-
-//TODO: what is test stack print,  clarification on 14-18

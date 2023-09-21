@@ -52,18 +52,22 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
-  const validator = jsonschema.validate(req.query, companyFilterSchema);
+
+  //FIXME: min/max issue where both are required atm
+  const nameLike = req.query?.nameLike
+  const minEmployees = Number(req.query?.minEmployees)
+  const maxEmployees = Number(req.query?.maxEmployees)
+  const filters = { nameLike, minEmployees, maxEmployees }
+
+  const validator = jsonschema.validate(filters, companyFilterSchema);
 
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
     throw new BadRequestError(errs);
   }
 
-
-
-  const companies = await Company.findAll(req.query);
+  const companies = await Company.findAll(filters);
   return res.json({ companies });
-
 });
 
 /** GET /[handle]  =>  { company }

@@ -86,9 +86,11 @@ describe("findAll", function () {
     ]);
   });
 
-  test("works: filter- minEmployees", async function () {
+  test("works: filter minEmployees", async function () {
     const minEmployees = "2";
+
     let companies = await Company.findAll({ minEmployees });
+
     expect(companies.length).toEqual(2);
     expect(companies).toEqual([
       {
@@ -108,10 +110,12 @@ describe("findAll", function () {
     ]);
   });
 
-  test("works: filter- minEmployees, maxEmployees", async function () {
+  test("works: filter minEmployees, maxEmployees", async function () {
     const minEmployees = "2";
     const maxEmployees = "3";
+
     let companies = await Company.findAll({ minEmployees, maxEmployees });
+
     expect(companies.length).toEqual(2);
     expect(companies).toEqual([
       {
@@ -131,11 +135,18 @@ describe("findAll", function () {
     ]);
   });
 
-  test("works: filter- minEmployees, maxEmployees", async function () {
+  test("works: filter minEmployees, maxEmployees", async function () {
     const minEmployees = "2";
     const maxEmployees = "3";
     const nameLike = "C2";
-    let companies = await Company.findAll({ minEmployees, maxEmployees, nameLike });
+
+    let companies = await Company.findAll(
+      {
+        minEmployees,
+        maxEmployees,
+        nameLike
+      });
+
     expect(companies.length).toEqual(1);
     expect(companies).toEqual([
       {

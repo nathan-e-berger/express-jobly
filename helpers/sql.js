@@ -31,37 +31,52 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 }
 
 
-/** sqlFilterCompany: Takes in parameters to filter and builds a
+/** sqlForCompanyFilter: Takes in parameters to filter and builds a
  *  dynamic WHERE statement if values are passed in.
  *
  * Accepts { nameLike, minEmployees, maxEmployees }
  *
- * Returns string (WHERE clause)
+ * Returns
+ *        {
+ *        whereStatement:
+ *        values: [nameLike, minEmployees, maxEmployees]
+ *        }
  */
-function sqlFilterCompany({ nameLike, minEmployees, maxEmployees }) {
+function sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees }) {
 
   if (minEmployees && maxEmployees) {
-    if (Number(minEmployees) > Number(maxEmployees))
+    if (minEmployees > maxEmployees)
       throw new BadRequestError(
         "minEmployees must be smaller than maxEmployees.");
   }
 
-  let statement = [];
+  let whereStatements = [];
+  let params = [];
+  let idx = 1;
 
   if (nameLike) {
-    statement.push(`name ILIKE '%${nameLike}%'`);
+    whereStatements.push(`name ILIKE $${idx}`);
+    params.push(`%${nameLike}%`)
+    idx++;
+
   }
 
   if (minEmployees) {
-    statement.push(`num_employees >= ${minEmployees}`);
+    whereStatements.push(`num_employees >= $${idx}`);
+    params.push(minEmployees)
+    idx++;
   }
 
   if (maxEmployees) {
-    statement.push(`num_employees <= ${maxEmployees}`);
+    whereStatements.push(`num_employees <= $${idx}`);
+    params.push(maxEmployees)
+    idx++;
   }
 
-  return "WHERE ".concat(statement.join(" AND "));
-
+  return {
+    whereStatement: "WHERE ".concat(whereStatements.join(" AND ")),
+    values: params,
+  };
 }
 
-module.exports = { sqlForPartialUpdate, sqlFilterCompany };
+module.exports = { sqlForPartialUpdate, sqlForCompanyFilter };

@@ -6,16 +6,13 @@
     "nameLike": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 30,
-      "pattern": "^[a-zA-Z, -]$"
+      "maxLength": 30
     },
     "minEmployees": {
-      "type": "string",
-      "pattern": "^[0-9]$"
+      "type": "integer"
     },
     "maxEmployees": {
-      "type": "string",
-      "pattern": "^[0-9]$"
+      "type": "integer"
     }
   },
   "additionalProperties": false,

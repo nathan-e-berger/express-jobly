@@ -1,7 +1,7 @@
 "use strict";
 
 const { defineConfig } = require("vite");
-const { sqlForPartialUpdate, sqlFilterCompany } = require("./sql");
+const { sqlForPartialUpdate, sqlForCompanyFilter } = require("./sql");
 
 
 /************************************** sqlForPartialUpdate */
@@ -62,33 +62,41 @@ describe("sqlForPartialUpdate", function () {
   });
 });
 
-/************************************** sqlFilterCompany */
+/************************************** sqlForCompanyFilter */
 
-describe("sqlFilterCompany", function () {
-  test("mimic inputs for filterAll() Company method ", function () {
+describe("sqlForCompanyFilter", function () {
+  test("nameLike", function () {
     const nameLike = "test";
-    expect(sqlFilterCompany({ nameLike })).toEqual("WHERE name ILIKE '%test%'");
+
+    expect(sqlForCompanyFilter({ nameLike })).toEqual("WHERE name ILIKE '%test%'");
   });
-  test("nameLike and minEmployees as optional parameters", function () {
+
+
+  test("nameLike and minEmployees", function () {
     const nameLike = "test";
     const minEmployees = 2;
-    expect(sqlFilterCompany({ nameLike, minEmployees }))
+
+    expect(sqlForCompanyFilter({ nameLike, minEmployees }))
       .toEqual("WHERE name ILIKE '%test%' AND num_employees >= 2");
   });
 
-  test("nameLike and minEmployees as optional parameters", function () {
+
+  test("nameLike, minEmployees, maxEmployees", function () {
     const nameLike = "test";
     const minEmployees = 2;
     const maxEmployees = 3;
-    expect(sqlFilterCompany({ nameLike, minEmployees, maxEmployees })).toEqual(
+
+    expect(sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees })).toEqual(
       "WHERE name ILIKE '%test%' AND num_employees >= 2 AND num_employees <= 3");
   });
+
 
   test("minEmployees > maxEmployees throws error", function () {
     const minEmployees = 3;
     const maxEmployees = 2;
+
     expect(() => {
-      sqlFilterCompany({ minEmployees, maxEmployees });
+      sqlForCompanyFilter({ minEmployees, maxEmployees });
     }).toThrow("minEmployees must be smaller than maxEmployees.");
   });
 });
