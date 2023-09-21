@@ -30,15 +30,7 @@ describe("POST /companies", function () {
     numEmployees: 10,
   };
 
-  test("unauth for users", async function () {
-    const resp = await request(app)
-      .post("/companies")
-      .send(newCompany)
-      .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(401);
-  });
-
-  test("ok for admins", async function () {
+  test("works for admins", async function () {
     const resp = await request(app)
       .post("/companies")
       .send(newCompany)
@@ -48,6 +40,15 @@ describe("POST /companies", function () {
       company: newCompany,
     });
   });
+
+  test("unauth for users", async function () {
+    const resp = await request(app)
+      .post("/companies")
+      .send(newCompany)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
 
   test("bad request with missing data", async function () {
     const resp = await request(app)
