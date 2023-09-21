@@ -18,3 +18,7 @@ jerry (not admin):
 
 testadmin:
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RhZG1pbiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY5NTMyMTk0OH0.07PHUi69mO2vw628WeLuBjlW1h23kOK0yk3_JRO6otw
+
+
+testadmin: nathan
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RhZG1pbiIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY5NTMyMzM0OX0.pJvlyL_0-TQVOkObxXfRmpRUxu03B8wR1AC_drHytoE

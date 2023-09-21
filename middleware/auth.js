@@ -48,8 +48,37 @@ function ensureIsAdmin(req, res, next) {
 }
 
 
+//FIXME: potential for users
+// /** Middleware: Requires user is user for route. */
+
+function ensureCorrectUser(req, res, next) {
+  const currentUser = res.locals.user;
+  const hasUnauthorizedUsername = currentUser?.username !== req.params.username;
+
+  if (!currentUser || hasUnauthorizedUsername) {
+    throw new UnauthorizedError();
+  }
+
+  return next();
+}
+
+/**Middleware to be used by correct user or admin
+ *  If neither, raise Unauthorized
+ */
+
+function ensureAdminOrCorrectUser(req, res, next) {
+  const username = res.locals.user?.username;
+  const isAdmin = res.locals.user?.isAdmin;
+  if (req.params.username !== username || isAdmin === false) {
+    throw new UnauthorizedError();
+  }
+  return next();
+}
+
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
-  ensureIsAdmin
+  ensureIsAdmin,
+  ensureCorrectUser,
+  ensureAdminOrCorrectUser
 };

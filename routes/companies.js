@@ -53,10 +53,10 @@ router.post("/", ensureIsAdmin, async function (req, res, next) {
 
 router.get("/", async function (req, res, next) {
   let query = req.query;
-  if (query.minEmployees) query.minEmployees = Number(query.minEmployees)
-  if (query.maxEmployees) query.maxEmployees = Number(query.maxEmployees)
+  if (query.minEmployees) query.minEmployees = Number(query.minEmployees);
+  if (query.maxEmployees) query.maxEmployees = Number(query.maxEmployees);
 
-  const validator = jsonschema.validate(query, companyFilterSchema, {required: true});
+  const validator = jsonschema.validate(query, companyFilterSchema, { required: true });
 
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
@@ -116,19 +116,5 @@ router.delete("/:handle", ensureIsAdmin, async function (req, res, next) {
   return res.json({ deleted: req.params.handle });
 });
 
-
-//FIXME: potential for users
-// /** Middleware: Requires user is user for route. */
-
-// function ensureCorrectUser(req, res, next) {
-//   const currentUser = res.locals.user;
-//   const hasUnauthorizedUsername = currentUser?.username !== req.params.username;
-
-//   if (!currentUser || hasUnauthorizedUsername) {
-//     throw new UnauthorizedError();
-//   }
-
-//   return next();
-// }
 
 module.exports = router;
