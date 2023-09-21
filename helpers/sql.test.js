@@ -98,14 +98,4 @@ describe("sqlForCompanyFilter", function () {
           "AND num_employees <= $3"
       });
   });
-
-
-  // test("minEmployees > maxEmployees throws error", function () {
-  //   const minEmployees = 3;
-  //   const maxEmployees = 2;
-
-  //   expect(() => {
-  //     sqlForCompanyFilter({ minEmployees, maxEmployees });
-  //   }).toThrow("minEmployees must be smaller than maxEmployees.");
-  // });
 });

@@ -42,6 +42,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
  *        values: [nameLike, minEmployees, maxEmployees]
  *        }
  */
+//TODO:move to model for better encaps
 function sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees }) {
 
   let whereStatements = [];

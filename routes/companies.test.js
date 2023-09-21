@@ -95,7 +95,8 @@ describe("GET /companies", function () {
         ],
     });
   });
-
+  //TODO:move to model for more targeted test
+  // add test to check for unauth params
   test("minEmployees > maxEmployees throws error", async function () {
     const minEmployees = 3;
     const maxEmployees = 2;

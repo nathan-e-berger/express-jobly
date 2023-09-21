@@ -55,7 +55,7 @@ class Company {
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
-
+  //TODO: look at solution for tips
   static async findAll({ nameLike = null, minEmployees = null, maxEmployees = null }) {
     let whereStatement;
     let values;

@@ -52,10 +52,12 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
+  TODO://if min/max undefined, set to number not undefined
+  // set query to req.query and pull properties as needed
   let { nameLike, minEmployees, maxEmployees } = req.query;
   minEmployees = minEmployees ? Number(minEmployees) : undefined;
   maxEmployees = maxEmployees ? Number(maxEmployees) : undefined;
-
+  TODO://cut down route noise, move to model
   if (minEmployees && maxEmployees) {
     if (minEmployees > maxEmployees)
       throw new BadRequestError(
@@ -63,7 +65,7 @@ router.get("/", async function (req, res, next) {
   }
 
   const filters = { nameLike, minEmployees, maxEmployees };
-
+  TODO://required: true so it fails undefined on validator
   const validator = jsonschema.validate(filters, companyFilterSchema);
 
   if (!validator.valid) {
