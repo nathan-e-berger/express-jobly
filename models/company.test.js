@@ -158,7 +158,59 @@ describe("findAll", function () {
       }
     ]);
   });
+
+  test("minEmployees > maxEmployees throws error", async function () {
+    const minEmployees = 100;
+    const maxEmployees = 2;
+
+    try {
+      await Company.findAll({ minEmployees, maxEmployees });
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+
+
 });
+
+/************************************** sqlForCompanyFilter */
+describe("sqlForCompanyFilter", function () {
+  test("nameLike", function () {
+    const nameLike = "test";
+
+    expect(Company.sqlForCompanyFilter({ nameLike })).toEqual({
+      "values": ["%test%"],
+      "whereStatement": "WHERE name ILIKE $1"
+    });
+  });
+
+
+  test("nameLike and minEmployees", function () {
+    const nameLike = "test";
+    const minEmployees = 2;
+
+    expect(Company.sqlForCompanyFilter({ nameLike, minEmployees }))
+      .toEqual({
+        "values": ["%test%", 2],
+        "whereStatement": "WHERE name ILIKE $1 AND num_employees >= $2"
+      });
+  });
+
+
+  test("nameLike, minEmployees, maxEmployees", function () {
+    const nameLike = "test";
+    const minEmployees = 2;
+    const maxEmployees = 3;
+
+    expect(Company.sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees })).toEqual(
+      {
+        "values": ["%test%", 2, 3],
+        "whereStatement": "WHERE name ILIKE $1 AND num_employees >= $2 " +
+          "AND num_employees <= $3"
+      });
+  });
+});
+
 
 /************************************** get */
 

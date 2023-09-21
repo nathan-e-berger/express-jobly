@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForCompanyFilter } = require("../helpers/sql");
+const { sqlForPartialUpdate } = require("../helpers/sql");
 
 /** Related functions for companies. */
 
@@ -55,17 +55,23 @@ class Company {
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
-  //TODO: look at solution for tips
+
+  //TO DO: look at solution for tips
   static async findAll({ nameLike = null, minEmployees = null, maxEmployees = null }) {
+    if (minEmployees && maxEmployees) {
+      if (minEmployees > maxEmployees)
+        throw new BadRequestError(
+          "minEmployees must be smaller than maxEmployees.");
+    }
+
     let whereStatement;
     let values;
 
     if (nameLike || minEmployees || maxEmployees) {
-      const result = sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees });
+      const result = Company.sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees });
       whereStatement = result.whereStatement;
       values = result.values;
     }
-
 
     const companiesRes = await db.query(`
         SELECT handle,
@@ -78,6 +84,47 @@ class Company {
         ORDER BY name`, values);
 
     return companiesRes.rows;
+  }
+
+  /** sqlForCompanyFilter: Takes in parameters to filter and builds a
+ *  dynamic WHERE statement if values are passed in.
+ *
+ * Accepts { nameLike, minEmployees, maxEmployees }
+ *
+ * Returns
+ *        {
+ *        whereStatement: "WHERE num_employees >= $1 ..."
+ *        values: [nameLike, minEmployees, maxEmployees]
+ *        }
+ */
+  static sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees }) {
+    let whereStatements = [];
+    let params = [];
+    let idx = 1;
+
+    if (nameLike) {
+      whereStatements.push(`name ILIKE $${idx}`);
+      params.push(`%${nameLike}%`);
+      idx++;
+
+    }
+
+    if (minEmployees) {
+      whereStatements.push(`num_employees >= $${idx}`);
+      params.push(minEmployees);
+      idx++;
+    }
+
+    if (maxEmployees) {
+      whereStatements.push(`num_employees <= $${idx}`);
+      params.push(maxEmployees);
+      idx++;
+    }
+
+    return {
+      whereStatement: "WHERE ".concat(whereStatements.join(" AND ")),
+      values: params,
+    };
   }
 
 

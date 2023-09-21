@@ -30,48 +30,4 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-
-/** sqlForCompanyFilter: Takes in parameters to filter and builds a
- *  dynamic WHERE statement if values are passed in.
- *
- * Accepts { nameLike, minEmployees, maxEmployees }
- *
- * Returns
- *        {
- *        whereStatement: "WHERE num_employees >= $1 ..."
- *        values: [nameLike, minEmployees, maxEmployees]
- *        }
- */
-//TODO:move to model for better encaps
-function sqlForCompanyFilter({ nameLike, minEmployees, maxEmployees }) {
-
-  let whereStatements = [];
-  let params = [];
-  let idx = 1;
-
-  if (nameLike) {
-    whereStatements.push(`name ILIKE $${idx}`);
-    params.push(`%${nameLike}%`);
-    idx++;
-
-  }
-
-  if (minEmployees) {
-    whereStatements.push(`num_employees >= $${idx}`);
-    params.push(minEmployees);
-    idx++;
-  }
-
-  if (maxEmployees) {
-    whereStatements.push(`num_employees <= $${idx}`);
-    params.push(maxEmployees);
-    idx++;
-  }
-
-  return {
-    whereStatement: "WHERE ".concat(whereStatements.join(" AND ")),
-    values: params,
-  };
-}
-
-module.exports = { sqlForPartialUpdate, sqlForCompanyFilter };
+module.exports = { sqlForPartialUpdate };

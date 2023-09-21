@@ -95,8 +95,17 @@ describe("GET /companies", function () {
         ],
     });
   });
-  //TODO:move to model for more targeted test
-  // add test to check for unauth params
+
+  test("extra parameters when filtering", async function () {
+    const maxSalary = 10;
+    const maxEmployees = 2;
+    const queryParams = new URLSearchParams({ maxSalary, maxEmployees });
+    const resp = await request(app).get(`/companies?${queryParams}`);
+
+    expect(resp.status).toEqual(400);
+  });
+
+
   test("minEmployees > maxEmployees throws error", async function () {
     const minEmployees = 3;
     const maxEmployees = 2;
