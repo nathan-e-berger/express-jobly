@@ -52,11 +52,9 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
-
-  //FIXME: min/max issue where both are required atm
-  const nameLike = req.query?.nameLike
-  const minEmployees = Number(req.query?.minEmployees)
-  const maxEmployees = Number(req.query?.maxEmployees)
+  let { nameLike, minEmployees, maxEmployees } = req.query;
+  minEmployees = minEmployees ? Number(minEmployees) : undefined;
+  maxEmployees = maxEmployees ? Number(maxEmployees) : undefined;
   const filters = { nameLike, minEmployees, maxEmployees }
 
   const validator = jsonschema.validate(filters, companyFilterSchema);
