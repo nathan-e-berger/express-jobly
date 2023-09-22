@@ -10,10 +10,10 @@ class Job {
     * data should be { title, salary, equity, company_handle }
     *
     * Returns { id, title, salary, equity, company_handle }
-    *
-    * Throws BadRequestError if job already in database.
+    // *FIXME: look for company handle, error if not found
     * */
   static async create({ title, salary, equity, company_handle }) {
+    console.log("company handle", company_handle)
     const result = await db.query(`
                 INSERT INTO jobs (title,
                                        salary,
