@@ -2,6 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
+const { sqlForPartialUpdate } = require("../helpers/sql");
 
 class Job {
   /** Create a job (from data), update db, return new job data.
@@ -37,20 +38,18 @@ class Job {
   }
 
 
-  /** Find all companies.
+  /** Find all jobs.
    *
    * */
-
-  //TO DO: look at solution for tips
   static async findAll() {
     const jobsRes = await db.query(`
-        SELECT handle,
-               name,
-               description,
-               num_employees AS "numEmployees",
-               logo_url      AS "logoUrl"
-        FROM companies
-        ORDER BY name`);
+        SELECT id,
+               title,
+               salary,
+               equity,
+               company_handle AS "companyHandle"
+        FROM jobs
+        ORDER BY id`);
 
     return jobsRes.rows;
   }
@@ -61,7 +60,6 @@ class Job {
    *
    * Throws NotFoundError if not found.
    **/
-
   static async get(id) {
     const jobsRes = await db.query(`
         SELECT id,
@@ -90,7 +88,6 @@ class Job {
      *
      * Throws NotFoundError if not found.
      */
-
   static async update(id, data) {
     const { setCols, values } = sqlForPartialUpdate(data, {});
     const idVarIdx = "$" + (values.length + 1);
@@ -108,7 +105,7 @@ class Job {
     const result = await db.query(querySql, [...values, id]);
     const job = result.rows[0];
 
-    if (!job) throw new NotFoundError(`No company: ${id}`);
+    if (!job) throw new NotFoundError(`No job: ${id}`);
 
     return job;
   }
@@ -117,7 +114,6 @@ class Job {
    *
    * Throws NotFoundError if job not found.
    **/
-
   static async remove(id) {
     const result = await db.query(`
         DELETE
@@ -126,7 +122,7 @@ class Job {
         RETURNING id`, [id]);
     const job = result.rows[0];
 
-    if (!job) throw new NotFoundError(`No company: ${id}`);
+    if (!job) throw new NotFoundError(`No job: ${id}`);
   }
 }
 
